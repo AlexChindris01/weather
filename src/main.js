@@ -3,7 +3,7 @@ import './style.css'
 document.querySelector('#app').innerHTML = `
   <div id="main-card">
     
-    <div style="display: grid; grid-template-columns: auto 250px">
+    <div id="main-header-grid">
       <h1 id="main-header">Weather App</h1>
       <input type="text" id="location-search" placeholder="Search for a location...">
     </div>

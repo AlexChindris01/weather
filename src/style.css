@@ -13,11 +13,7 @@ body {
   background-size: cover;
 }
 
-@media only screen and (max-width: 600px) {
-  body {
-    /*background-size: */
-  }
-}
+
 
 #main-card {
   max-width: 780px;
@@ -51,9 +47,10 @@ body {
 }
 
 #location-search {
+  font-size: .95rem;
   margin: .7rem;
-  margin-top: .2rem;
-  margin-bottom: 1.7rem;
+  margin-top: .4rem;
+  margin-bottom: 1.5rem;
   padding-left: 2.5rem;
   /*padding-top: .3rem;*/
   border-radius: 30px;
@@ -63,4 +60,32 @@ body {
   background-size: 1.5rem;
   background-repeat: no-repeat;
   background-position: 10px 8px;
+}
+
+input:focus {
+  outline: rgba(0, 0, 0, .4) solid 1px;
+}
+
+#main-header-grid {
+  display: grid;
+  grid-template-columns: auto 250px;
+}
+
+
+@media only screen and (max-width: 650px) {
+  body {
+    /*background-size: */
+  }
+  #main-header-grid {
+    display: initial;
+    grid-template-columns: initial;
+  }
+  #location-search {
+    margin: 0;
+    padding: 0;
+    padding-left: 2.3rem;
+    /*background-position-y: .25rem;*/
+    min-height: 2.5rem;
+    min-width: 13rem;
+  }
 }
