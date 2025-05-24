@@ -9,27 +9,58 @@
 body {
   font-family: Helvetica, Arial, sans-serif;
   background-image: url("assets/backgrounds/sun_and_clouds_3.jpg");
-  background-size: 100vw;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
-#app {
-  /*max-width: 800px;*/
-  margin-left: 20rem;
-  margin-right: 20rem;
-  margin-top: 7rem;
+@media only screen and (max-width: 600px) {
+  body {
+    /*background-size: */
+  }
+}
+
+#main-card {
+  max-width: 780px;
+  margin: auto;
+  /*margin-left: 20rem;*/
+  /*margin-right: 20rem;*/
+  margin-top: 4rem;
   background-color: rgba(255, 255, 255, .5);
   padding: 4rem;
+  padding-top: 2.5rem;
   border-radius: 30px;
   padding-bottom: 20rem;
   backdrop-filter: blur(5px);
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, .2);
-  border: 1px solid rgba(0, 0, 0, .3);
+  border: 1px solid rgba(0, 0, 0, .1);
   /*text-align: center;*/
 }
 
 #main-header {
+  /*font-family: Helvetica, Arial, sans-serif;*/
+  font-size: 2.2rem;
   padding: 0;
   margin: 0;
   margin-bottom: 2rem;
-  color: rgba(0, 0, 0, .7);
+  color: rgba(0, 30, 100, .8);
+}
+
+.large-header {
+  color: rgba(0, 30, 100, .8);
+  font-size: 1.6rem;
+}
+
+#location-search {
+  margin: .7rem;
+  margin-top: .2rem;
+  margin-bottom: 1.7rem;
+  padding-left: 2.5rem;
+  /*padding-top: .3rem;*/
+  border-radius: 30px;
+  border: 1px solid rgba(0, 0, 0, .4);
+  background-color: rgba(255, 255, 255, .8);
+  background-image: url("assets/icons/search.png");
+  background-size: 1.5rem;
+  background-repeat: no-repeat;
+  background-position: 10px 8px;
 }
