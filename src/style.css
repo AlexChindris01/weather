@@ -1,0 +1,35 @@
+/*body {*/
+/*  margin: 0;*/
+/*  display: flex;*/
+/*  !*place-items: center;*!*/
+/*  min-width: 320px;*/
+/*  min-height: 100vh;*/
+/*}*/
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background-image: url("assets/backgrounds/sun_and_clouds_3.jpg");
+  background-size: 100vw;
+}
+
+#app {
+  /*max-width: 800px;*/
+  margin-left: 20rem;
+  margin-right: 20rem;
+  margin-top: 7rem;
+  background-color: rgba(255, 255, 255, .5);
+  padding: 4rem;
+  border-radius: 30px;
+  padding-bottom: 20rem;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, .2);
+  border: 1px solid rgba(0, 0, 0, .3);
+  /*text-align: center;*/
+}
+
+#main-header {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 2rem;
+  color: rgba(0, 0, 0, .7);
+}
