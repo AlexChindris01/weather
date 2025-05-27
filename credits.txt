@@ -1,2 +1,4 @@
 <a href="https://www.flaticon.com/free-icons/search-bar" title="search bar icons">Search bar icons created by Tanah Basah - Flaticon</a>
 obs: atributie ce trebuie facuta cu link
+
+<a href="https://www.flaticon.com/packs/weather-forecast-15562245" title="weather icons">Weather icons created by Bahu Icons - Flaticon</a>
