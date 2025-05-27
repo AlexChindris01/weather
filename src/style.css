@@ -73,7 +73,7 @@ input:focus {
 
 #data-1-grid {
   display: grid;
-  grid-template-columns: auto 155px;
+  grid-template-columns: auto 143px;
 }
 
 #current-temperature {
@@ -89,12 +89,108 @@ input:focus {
   width: 50px;
   height: 50px;
   display: block;
+  margin-top: .25rem;
 }
 
 #current-weather {
   display: flex;
   /*position: absolute;*/
   /*right: 4rem;*/
+
+}
+
+.scrollable-container {
+  overflow-x: auto;
+  /*width: 100%;*/
+}
+
+#data-24h-grid {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  margin-top: 1.5rem;
+  margin-right: .9rem;
+}
+
+.weather-24h {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /*margin: .1rem;*/
+  /*justify-content: center;*/
+}
+
+.weather-icon-24h {
+  width: 40px;
+  height: 40px;
+  /*display: block;*/
+  /*margin: 0 auto;*/
+}
+
+.weather-time-24h {
+  color: rgba(0, 30, 100, .6);
+  margin-bottom: .5rem;
+}
+
+.weather-temperature-24h {
+  margin-top: .4rem;
+  color: rgba(0, 30, 100, 1);
+}
+
+.rain-chance-24h {
+  display: flex;
+  margin-top: .4rem;
+}
+
+.rain-chance-icon-24h {
+  width: 14px;
+  height: 14px;
+}
+
+.rain-chance-text-24h {
+  font-size: .8rem;
+  color: rgba(0, 30, 100, .9);
+}
+
+#data-week-grid {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto;
+  margin-top: 1.5rem;
+  margin-right: .9rem;
+}
+
+.weather-week {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(0, 30, 100, .3);
+  margin: .5rem;
+  padding: .5rem;
+  border-radius: 15%;
+}
+
+.weather-day-week {
+  color: rgba(0, 30, 100, .8);
+  margin-bottom: .5rem;
+}
+
+.weather-icon-week {
+  width: 40px;
+  height: 40px;
+}
+
+.temperature-week {
+  display: flex;
+  margin-top: .6rem;
+  font-size: .9rem;
+}
+
+.max-temp-week {
+  color: rgba(0, 30, 100, 1);
+  margin-right: .4rem;
+}
+
+.min-temp-week {
+  color: rgba(0, 30, 100, .6);
 
 }
 
@@ -107,6 +203,9 @@ input:focus {
     display: initial;
     grid-template-columns: initial;
   }
+  #data-1-grid {
+    margin-top: 1.5rem;
+  }
   #location-search {
     margin: 0;
     padding: 0;
@@ -114,5 +213,8 @@ input:focus {
     /*background-position-y: .25rem;*/
     min-height: 2.5rem;
     min-width: 13rem;
+  }
+  #data-24h-grid {
+    width: 600px;
   }
 }
