@@ -2,6 +2,7 @@ import './style.css';
 import currWeather from './assets/icons/weather_icons_3/sun.png';
 import weather24h1 from './assets/icons/weather_icons_3/cloudy (1).png';
 import drop from './assets/icons/weather_icons_3/drop.png';
+import { API_KEY } from "./secret.js";
 
 let content24h = '';
 let i;
@@ -72,3 +73,27 @@ document.querySelector('#app').innerHTML = `
   </div>
 `;
 
+let search = document.getElementById("location-search");
+search.addEventListener("keydown", (e) => {
+    if (e.code === "Enter") {
+        let lat, lon;
+        const searchInput = search.value.split(" ");
+        lat = searchInput[0];
+        lon = searchInput[1];
+        const API_URL =
+            "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
+        fetch(API_URL)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("response error");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Data received: ", data);
+            })
+            .catch(error => {
+                console.error("Fetch error: ", error);
+            })
+    }
+})
