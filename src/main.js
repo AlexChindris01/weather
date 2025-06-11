@@ -166,6 +166,7 @@ function displayWeatherData(data) {
         hourlyPOPs[i].innerHTML += "%";
         dayNight = (currHour > sunriseHour && currHour < sunsetHour) ?
         0 : 1;
+
         hourlyIcons[i].src = wIcons.get(currHourly["weather"][0]["id"])[dayNight] + ".png";
     }
     const dailyMaxes = document.getElementsByClassName("max-temp-week");
