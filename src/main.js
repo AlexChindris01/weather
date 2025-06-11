@@ -3,17 +3,10 @@ import currWeather from './assets/icons/weather_icons_3/sun.png';
 import weather24h1 from './assets/icons/weather_icons_3/cloudy (1).png';
 import drop from './assets/icons/weather_icons_3/drop.png';
 import { API_KEY } from "./secret.js";
+import { wIcons } from "./iconsMap.js";
 
-const WPATH = "/public/icons/weather";
-const wIcons = new Map([
-    [800, ["sun", "night"]],
-    [801, ["cloudy", "cloud (1)"]],
-    [802, ["cloudy", "cloud (1)"]],
-    [803, ["cloud", "cloud"]],
-    [804, ["cloud", "cloud"]],
-    [781, ["tornado (1)", "tornado (1)"]],
-    [741, ["fog", "fog"]]
-])
+const WPATH = "";//"/icons/weather";
+
 const weekdaysInLetters = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let content24h = '';
 let i;
@@ -147,20 +140,33 @@ function displayWeatherData(data) {
     console.log("Weather data received: ", data);
 
     document.getElementById("current-temperature").innerHTML = data["current"]["temp"];
+    let dayNight = (data["current"]["dt"] > data["current"]["sunrise"] && data["current"]["dt"] < data["current"]["sunset"]) ?
+        0 : 1;
+    document.getElementById("current-weather-icon").src =
+        WPATH + wIcons.get(data["current"]["weather"][0]["id"])[dayNight] + ".png";
+    console.log(WPATH + wIcons.get(data["current"]["weather"][0]["id"])[dayNight] + ".png");
     const hourlyTemps = document.getElementsByClassName("weather-temperature-24h");
     const hours = document.getElementsByClassName("weather-time-24h");
     const hourlyPOPs = document.getElementsByClassName("rain-chance-text-24h");
+    const hourlyIcons = document.getElementsByClassName("weather-icon-24h");
     let i;
     let dateTime;
     let currHourly;
+    let sunriseHour = new Date((data["current"]["sunrise"] + data["timezone_offset"]) * 1000).getUTCHours();
+    let sunsetHour = new Date((data["current"]["sunset"] + data["timezone_offset"]) * 1000).getUTCHours();
+    let currHour;
     for (i = 0; i < hourlyTemps.length; i++) {
         currHourly = data["hourly"][i * 3 + 1];
         hourlyTemps[i].innerHTML = currHourly["temp"];
         dateTime = new Date((currHourly["dt"] + data["timezone_offset"]) * 1000);
+        currHour = dateTime.getUTCHours();
         hours[i].innerHTML = dateTime.getUTCHours();
         hours[i].innerHTML += ":00";
-        hourlyPOPs[i].innerHTML = currHourly["pop"] * 100;
-        hourlyPOPs[i].innerHTML += "%"
+        hourlyPOPs[i].innerHTML = Math.round(currHourly["pop"] * 100);
+        hourlyPOPs[i].innerHTML += "%";
+        dayNight = (currHour > sunriseHour && currHour < sunsetHour) ?
+        0 : 1;
+        hourlyIcons[i].src = wIcons.get(currHourly["weather"][0]["id"])[dayNight] + ".png";
     }
     const dailyMaxes = document.getElementsByClassName("max-temp-week");
     const dailyMins = document.getElementsByClassName("min-temp-week");
