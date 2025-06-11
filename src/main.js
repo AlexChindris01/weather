@@ -83,6 +83,7 @@ function convertTemp() {
     for (i = 0; i < temps.length; i++) {
         temps[i].innerHTML = Math.round(Number(temps[i].innerHTML) - 273.15);
         temps[i].innerHTML += "°C";
+
     }
 }
 
