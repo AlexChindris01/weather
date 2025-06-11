@@ -4,6 +4,17 @@ import weather24h1 from './assets/icons/weather_icons_3/cloudy (1).png';
 import drop from './assets/icons/weather_icons_3/drop.png';
 import { API_KEY } from "./secret.js";
 
+const WPATH = "/public/icons/weather";
+const wIcons = new Map([
+    [800, ["sun", "night"]],
+    [801, ["cloudy", "cloud (1)"]],
+    [802, ["cloudy", "cloud (1)"]],
+    [803, ["cloud", "cloud"]],
+    [804, ["cloud", "cloud"]],
+    [781, ["tornado (1)", "tornado (1)"]],
+    [741, ["fog", "fog"]]
+])
+const weekdaysInLetters = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let content24h = '';
 let i;
 for (i = 0; i < 8; i++) {
@@ -26,7 +37,7 @@ for (i = 0; i < 7; i++) {
       <div class="weather-week">
         <div class="weather-day-week">Sun</div>
         <img class="weather-icon-week" src="${weather24h1}" alt="week weather icon"/>
-        <div class="temperature-week t">
+        <div class="temperature-week">
           <div class="max-temp-week t">25°C</div>
           <div class="min-temp-week t">10°C</div>
         </div>
@@ -113,6 +124,8 @@ search.addEventListener("keydown", (e) => {
 
 function fetchWeatherData(coordsData) {
     console.log("Coords data received: ", coordsData);
+    document.querySelector("#data-1-grid > .large-header").innerHTML =
+        coordsData[0]["name"] + ", " + (coordsData[0]["state"] ? coordsData[0]["state"] + ", " : "") + coordsData[0]["country"];
     const lat = coordsData[0]["lat"];
     const lon = coordsData[0]["lon"];
     const API_URL =
@@ -132,6 +145,7 @@ function fetchWeatherData(coordsData) {
 
 function displayWeatherData(data) {
     console.log("Weather data received: ", data);
+
     document.getElementById("current-temperature").innerHTML = data["current"]["temp"];
     const hourlyTemps = document.getElementsByClassName("weather-temperature-24h");
     const hours = document.getElementsByClassName("weather-time-24h");
@@ -140,13 +154,24 @@ function displayWeatherData(data) {
     let dateTime;
     let currHourly;
     for (i = 0; i < hourlyTemps.length; i++) {
-        currHourly = data["hourly"][i * 3];
+        currHourly = data["hourly"][i * 3 + 1];
         hourlyTemps[i].innerHTML = currHourly["temp"];
-        dateTime = new Date(currHourly["dt"] * 1000);
-        hours[i].innerHTML = dateTime.getHours();
+        dateTime = new Date((currHourly["dt"] + data["timezone_offset"]) * 1000);
+        hours[i].innerHTML = dateTime.getUTCHours();
         hours[i].innerHTML += ":00";
         hourlyPOPs[i].innerHTML = currHourly["pop"] * 100;
         hourlyPOPs[i].innerHTML += "%"
+    }
+    const dailyMaxes = document.getElementsByClassName("max-temp-week");
+    const dailyMins = document.getElementsByClassName("min-temp-week");
+    const days = document.getElementsByClassName("weather-day-week");
+    let currDaily;
+    for (i = 0; i < dailyMaxes.length; i++) {
+        currDaily = data["daily"][i];
+        dailyMaxes[i].innerHTML = currDaily["temp"]["max"];
+        dailyMins[i].innerHTML = currDaily["temp"]["min"];
+        dateTime = new Date((currDaily["dt"] + data["timezone_offset"]) * 1000);
+        days[i].innerHTML = weekdaysInLetters[dateTime.getUTCDay()];
     }
     convertTemp();
 }
