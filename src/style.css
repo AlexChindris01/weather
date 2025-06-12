@@ -102,6 +102,25 @@ input:focus {
 .scrollable-container {
   overflow-x: auto;
   /*width: 100%;*/
+  --mask-width: 20px;
+  /*padding-left: var(--mask-width);*/
+  /*padding-right: var(--mask-width);*/
+  --mask-image-content: linear-gradient(
+    to right,
+    transparent,
+    black var(--mask-width),
+    black calc(100% - var(--mask-width)),
+    transparent
+  );
+  --mask-size-content: 100% 100%;
+  mask-image: var(--mask-image-content);
+  mask-size: var(--mask-size-content);
+  mask-position: 0 0;
+  mask-repeat: no-repeat;
+}
+
+.scrollable-container::-webkit-scrollbar {
+  display: none;
 }
 
 #data-24h-grid {
@@ -215,6 +234,6 @@ input:focus {
     min-width: 13rem;
   }
   #data-24h-grid {
-    width: 600px;
+    width: 550px;
   }
 }

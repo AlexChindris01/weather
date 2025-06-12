@@ -173,6 +173,7 @@ function displayWeatherData(data) {
     const dailyMaxes = document.getElementsByClassName("max-temp-week");
     const dailyMins = document.getElementsByClassName("min-temp-week");
     const days = document.getElementsByClassName("weather-day-week");
+    const dailyIcons = document.getElementsByClassName("weather-icon-week");
     let currDaily;
     for (i = 0; i < dailyMaxes.length; i++) {
         currDaily = data["daily"][i];
@@ -180,6 +181,7 @@ function displayWeatherData(data) {
         dailyMins[i].innerHTML = currDaily["temp"]["min"];
         dateTime = new Date((currDaily["dt"] + data["timezone_offset"]) * 1000);
         days[i].innerHTML = weekdaysInLetters[dateTime.getUTCDay()];
+        dailyIcons[i].src = wIcons.get(currDaily["weather"][0]["id"])[0] + ".png";
     }
     convertTemp();
 }
