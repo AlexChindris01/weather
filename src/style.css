@@ -94,6 +94,8 @@ input:focus {
 
 #current-weather {
   display: flex;
+  /*justify-self: end;*/
+  /*float: right;*/
   /*position: absolute;*/
   /*right: 4rem;*/
 
@@ -115,12 +117,17 @@ input:focus {
   --mask-size-content: 100% 100%;
   mask-image: var(--mask-image-content);
   mask-size: var(--mask-size-content);
-  mask-position: 0 0;
+  mask-position: center;
   mask-repeat: no-repeat;
 }
 
 .scrollable-container::-webkit-scrollbar {
   display: none;
+}
+
+.scrollable-container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 #data-24h-grid {
@@ -234,6 +241,32 @@ input:focus {
     min-width: 13rem;
   }
   #data-24h-grid {
-    width: 550px;
+    width: 600px;
+
+  }
+  #border-container {
+    /*outline: 3px solid black;*/
+    border-top: 1px solid rgba(0, 0, 0, .2);
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    padding-bottom: 1.5rem;
+    margin-top: 1rem;
+    /*padding-left: 1px;*/
+    /*padding-right: 1px;*/
+    /*border-radius: 30px;*/
+    /*padding: 5px;*/
+    /*padding: 5px;*/
+    /*margin-top: 50px;*/
+    /*display: inline-block;*/
+    /*overflow-x: hidden;*/
+  }
+  #current-temperature {
+    padding-right: 0;
+    margin: 0;
+    margin-bottom: .8rem;
+    margin-top: .8rem;
+    margin-left: .8rem;
+  }
+  #current-weather {
+    justify-self: end;
   }
 }

@@ -54,13 +54,13 @@ document.querySelector('#app').innerHTML = `
         <h1 id="current-temperature" class="t">28°C</h1>
       </div>
     </div>
-    
+    <div id="border-container">
     <div class="scrollable-container">
       <div id="data-24h-grid">
         ${content24h}
       </div>
     </div>
-    
+    </div>
     
     <div id="data-week-grid">
       ${contentWeek}
