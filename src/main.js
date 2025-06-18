@@ -4,9 +4,11 @@ import weather24h1 from './assets/icons/weather_icons_3/cloudy (1).png';
 import drop from './assets/icons/weather_icons_3/drop.png';
 import { API_KEY } from "./secret.js";
 import { wIcons } from "./iconsMap.js";
+import locations from "./assets/locations.json";
 
 const WPATH = "";//"/icons/weather";
-
+//console.log(locationsJSON);
+//const locations = JSON.parse(locationsJSON);
 const weekdaysInLetters = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let content24h = '';
 let i;
@@ -77,6 +79,17 @@ document.querySelector('#app').innerHTML = `
   </div>
 `;
 
+function inputLocationMatch(searchWords, loc) {
+    const tester =
+        [loc["city"], loc["city_ascii"], loc["country"], loc["iso2"], loc["iso3"], loc["admin_name"]].join(",");
+    let word;
+    for (word of searchWords) {
+        if (!tester.includes(word)) {
+            return false;
+        }
+    }
+    return true;
+}
 function convertTemp() {
     const temps = document.getElementsByClassName("t");
     let i;
@@ -88,10 +101,31 @@ function convertTemp() {
 }
 
 let search = document.getElementById("location-search");
-search.addEventListener("keydown", (e) => {
-    if (e.code === "Enter") {
+
+
+search.addEventListener("keyup", (e) => {
+    if (/^[a-zA-Z]$/.test(e.key)) {
+        let searchWords = search.value.split(/[^\w]+/);
+        console.log("searchWords: ");
+        console.log(searchWords);
+        let suggestions = [];
+        let loc;
+        for (loc of locations) {
+            if (inputLocationMatch(searchWords, loc)) {
+                suggestions.push(loc);
+            }
+            if (suggestions.length === 5) {
+                break;
+            }
+        }
+        console.log(suggestions);
+    }
+    else if (e.code === "Enter") {
         // let lat, lon;
-        const searchInput = search.value;
+        let searchInput =
+            search.value
+                .split(/[^\w\s]+/)
+                .join(",");
         const COORD_API_URL =
             "http://api.openweathermap.org/geo/1.0/direct?q=" + searchInput + "&limit=1&appid=" + API_KEY;
         fetch(COORD_API_URL)
@@ -105,14 +139,6 @@ search.addEventListener("keydown", (e) => {
             .catch(error => {
                 console.error("Coords fetch error: ", error);
             })
-
-
-
-
-
-
-
-
     }
 })
 
