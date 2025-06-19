@@ -11,6 +11,7 @@ const WPATH = "";//"/icons/weather";
 //const locations = JSON.parse(locationsJSON);
 const weekdaysInLetters = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let content24h = '';
+let contentSuggestions = '';
 let i;
 for (i = 0; i < 8; i++) {
     content24h += `
@@ -47,7 +48,12 @@ document.querySelector('#app').innerHTML = `
     
     <div id="main-header-grid">
       <h1 id="main-header">Weather App</h1>
-      <input type="text" id="location-search" placeholder="Search for a location..."/>
+      <div id="search-and-suggestions">
+        <input type="text" id="location-search" placeholder="Search for a location..." autocomplete="off"/>
+        <div id="suggestions-dropdown">
+          ${contentSuggestions}
+        </div>
+      </div>
     </div>
     <div id="data-1-grid">
       <h1 class="large-header">Baia Mare</h1>
@@ -79,10 +85,32 @@ document.querySelector('#app').innerHTML = `
   </div>
 `;
 
+function simpleFetchWeatherData(location) {
+    console.log("fetching");
+    const API_URL =
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" + location['lat'] + "&lon=" + location['lng'] + "&appid=" + API_KEY;
+    fetch(API_URL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("response error");
+            }
+                document.querySelector("#data-1-grid > .large-header").innerHTML =
+                    location['city_ascii'] + ', ' + location['admin_name'] + ', ' + location['iso2'];
+            return response.json();
+        })
+        .then(displayWeatherData)
+        .catch(error => {
+            console.error("Fetch error: ", error);
+        })
+}
+
 function inputLocationMatch(searchWords, loc) {
     const tester =
         [loc["city"], loc["city_ascii"], loc["country"], loc["iso2"], loc["iso3"], loc["admin_name"]].join(",");
     let word;
+    if (searchWords.join().length === 0) {
+        return false;
+    }
     for (word of searchWords) {
         if (!tester.includes(word)) {
             return false;
@@ -100,12 +128,21 @@ function convertTemp() {
     }
 }
 
+
+
 let search = document.getElementById("location-search");
 
 
 search.addEventListener("keyup", (e) => {
-    if (/^[a-zA-Z]$/.test(e.key)) {
+    if (/^[\w]$/.test(e.key) || e.code === "Backspace") {
+        document.getElementById('suggestions-dropdown').innerHTML = '';
         let searchWords = search.value.split(/[^\w]+/);
+        for (let i = 0; i < searchWords.length; i++) {
+            if (/^[a-z]$/.test(searchWords[i][0])) {
+                searchWords[i] = searchWords[i][0].toUpperCase() + searchWords[i].slice(1);
+                console.log("yes");
+            }
+        }
         console.log("searchWords: ");
         console.log(searchWords);
         let suggestions = [];
@@ -117,6 +154,21 @@ search.addEventListener("keyup", (e) => {
             if (suggestions.length === 5) {
                 break;
             }
+        }
+        for (let suggestion of suggestions) {
+            // document.getElementById('suggestions-dropdown').innerHTML += `
+            //     <div class='search-suggestion'>
+            //       ${suggestion['city_ascii']}
+            //     </div>
+            // `;
+            // document.getElementById('suggestions-dropdown').lastChild
+            //     .onclick = () => simpleFetchWeatherData(suggestion['lat'], suggestion['lng']);
+            const myDiv = document.createElement('div');
+            myDiv.className = 'search-suggestion';
+            myDiv.textContent = suggestion['city_ascii'];
+            myDiv.onclick = () => simpleFetchWeatherData(suggestion);
+
+            document.getElementById('suggestions-dropdown').appendChild(myDiv);
         }
         console.log(suggestions);
     }
@@ -141,6 +193,8 @@ search.addEventListener("keyup", (e) => {
             })
     }
 })
+
+
 
 function fetchWeatherData(coordsData) {
     console.log("Coords data received: ", coordsData);

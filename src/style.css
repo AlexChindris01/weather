@@ -46,13 +46,25 @@ body {
   font-size: 1.6rem;
 }
 
+#search-and-suggestions {
+  position: relative;
+}
+
+#suggestions-dropdown {
+  /*display: none;*/
+  position: absolute;
+  background-color: white;
+  width: 100%;
+}
+
 #location-search {
   font-size: .95rem;
-  margin: .7rem;
-  margin-top: .4rem;
-  margin-bottom: 1.5rem;
+  /*margin: .7rem;*/
+  /*margin-top: .4rem;*/
+  /*margin-bottom: 1.5rem;*/
   padding-left: 2.5rem;
-  /*padding-top: .3rem;*/
+  padding-top: .75rem;
+  padding-bottom: .75rem;
   border-radius: 30px;
   border: 1px solid rgba(0, 0, 0, .4);
   background-color: rgba(255, 255, 255, .8);
