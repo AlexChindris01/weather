@@ -137,6 +137,10 @@ search.addEventListener("keyup", (e) => {
     if (/^[\w]$/.test(e.key) || e.code === "Backspace") {
         document.getElementById('suggestions-dropdown').innerHTML = '';
         let searchWords = search.value.split(/[^\w]+/);
+        if ((search.value !== '' && !search.classList.contains('writing')) ||
+            (search.value === '' && search.classList.contains('writing'))) {
+            search.classList.toggle('writing');
+        }
         for (let i = 0; i < searchWords.length; i++) {
             if (/^[a-z]$/.test(searchWords[i][0])) {
                 searchWords[i] = searchWords[i][0].toUpperCase() + searchWords[i].slice(1);
@@ -165,7 +169,7 @@ search.addEventListener("keyup", (e) => {
             //     .onclick = () => simpleFetchWeatherData(suggestion['lat'], suggestion['lng']);
             const myDiv = document.createElement('div');
             myDiv.className = 'search-suggestion';
-            myDiv.textContent = suggestion['city_ascii'];
+            myDiv.textContent = suggestion['city_ascii'] + ', ' + suggestion['admin_name'];
             myDiv.onclick = () => simpleFetchWeatherData(suggestion);
 
             document.getElementById('suggestions-dropdown').appendChild(myDiv);
