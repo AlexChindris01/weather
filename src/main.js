@@ -5,6 +5,7 @@ import drop from './assets/icons/weather_icons_3/drop.png';
 import { API_KEY } from "./secret.js";
 import { wIcons } from "./iconsMap.js";
 import locations from "./assets/locations.json";
+import "flag-icons/css/flag-icons.min.css";
 
 const WPATH = "";//"/icons/weather";
 //console.log(locationsJSON);
@@ -131,16 +132,20 @@ function convertTemp() {
 
 
 let search = document.getElementById("location-search");
-
+let searchAndSuggestions = document.getElementById('search-and-suggestions');
+let suggestionsDropdown = document.getElementById('suggestions-dropdown');
+search.addEventListener('focus', () => suggestionsDropdown.style.display = 'block');
+search.addEventListener('blur', () => {
+    document.body.addEventListener('mouseup', () => {
+        setTimeout(() => suggestionsDropdown.style.display = 'none', 10);
+    }, { once: true });
+});
 
 search.addEventListener("keyup", (e) => {
     if (/^[\w]$/.test(e.key) || e.code === "Backspace") {
         document.getElementById('suggestions-dropdown').innerHTML = '';
         let searchWords = search.value.split(/[^\w]+/);
-        if ((search.value !== '' && !search.classList.contains('writing')) ||
-            (search.value === '' && search.classList.contains('writing'))) {
-            search.classList.toggle('writing');
-        }
+        search.classList.toggle('writing', search.value !== '');
         for (let i = 0; i < searchWords.length; i++) {
             if (/^[a-z]$/.test(searchWords[i][0])) {
                 searchWords[i] = searchWords[i][0].toUpperCase() + searchWords[i].slice(1);
@@ -169,11 +174,15 @@ search.addEventListener("keyup", (e) => {
             //     .onclick = () => simpleFetchWeatherData(suggestion['lat'], suggestion['lng']);
             const myDiv = document.createElement('div');
             myDiv.className = 'search-suggestion';
-            myDiv.textContent = suggestion['city_ascii'] + ', ' + suggestion['admin_name'];
+            myDiv.innerHTML = `
+            <span class="fi fi-${suggestion['iso2'].toLowerCase()}"></span>
+            ${suggestion['city_ascii']}, ${suggestion['admin_name']}
+            `;
             myDiv.onclick = () => simpleFetchWeatherData(suggestion);
 
             document.getElementById('suggestions-dropdown').appendChild(myDiv);
         }
+        search.classList.toggle('has-suggestions', suggestions.length > 0);
         console.log(suggestions);
     }
     else if (e.code === "Enter") {
