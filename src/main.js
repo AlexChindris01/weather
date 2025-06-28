@@ -88,6 +88,7 @@ document.querySelector('#app').innerHTML = `
 
 function simpleFetchWeatherData(location) {
     console.log("fetching");
+
     const API_URL =
         "https://api.openweathermap.org/data/3.0/onecall?lat=" + location['lat'] + "&lon=" + location['lng'] + "&appid=" + API_KEY;
     fetch(API_URL)
@@ -137,7 +138,10 @@ let suggestionsDropdown = document.getElementById('suggestions-dropdown');
 search.addEventListener('focus', () => suggestionsDropdown.style.display = 'block');
 search.addEventListener('blur', () => {
     document.body.addEventListener('mouseup', () => {
-        setTimeout(() => suggestionsDropdown.style.display = 'none', 10);
+        if (document.activeElement !== search) {
+            setTimeout(() => suggestionsDropdown.style.display = 'none', 10);
+        }
+
     }, { once: true });
 });
 
@@ -174,6 +178,7 @@ search.addEventListener("keyup", (e) => {
             //     .onclick = () => simpleFetchWeatherData(suggestion['lat'], suggestion['lng']);
             const myDiv = document.createElement('div');
             myDiv.className = 'search-suggestion';
+            myDiv.dataset.locationData = JSON.stringify(suggestion);
             myDiv.innerHTML = `
             <span class="fi fi-${suggestion['iso2'].toLowerCase()}"></span>
             ${suggestion['city_ascii']}, ${suggestion['admin_name']}
@@ -183,10 +188,18 @@ search.addEventListener("keyup", (e) => {
             document.getElementById('suggestions-dropdown').appendChild(myDiv);
         }
         search.classList.toggle('has-suggestions', suggestions.length > 0);
+        suggestionsDropdown.firstChild.classList.add('selected');
         console.log(suggestions);
     }
     else if (e.code === "Enter") {
-        // let lat, lon;
+        if (document.getElementById('suggestions-dropdown').innerHTML !== '') {
+            let data = JSON.parse(document.getElementsByClassName('selected')[0].dataset.locationData);
+            document.getElementById('location-search').blur();
+            document.getElementById('suggestions-dropdown').style.display = 'none';
+            simpleFetchWeatherData(data);
+        }
+        else {
+            // let lat, lon;
         let searchInput =
             search.value
                 .split(/[^\w\s]+/)
@@ -204,10 +217,33 @@ search.addEventListener("keyup", (e) => {
             .catch(error => {
                 console.error("Coords fetch error: ", error);
             })
+        }
+
     }
 })
 
-
+search.addEventListener('keydown', (e) => {
+    if (e.code === 'ArrowDown') {
+        let oldSelected = document.getElementsByClassName('selected')[0];
+        oldSelected.classList.remove('selected');
+        if (oldSelected !== suggestionsDropdown.lastChild) {
+            oldSelected.nextElementSibling.classList.add('selected');
+        }
+        else {
+            suggestionsDropdown.firstChild.classList.add('selected');
+        }
+    }
+    else if (e.code === 'ArrowUp') {
+        let oldSelected = document.getElementsByClassName('selected')[0];
+        oldSelected.classList.remove('selected');
+        if (oldSelected !== suggestionsDropdown.firstChild) {
+            oldSelected.previousElementSibling.classList.add('selected');
+        }
+        else {
+            suggestionsDropdown.lastChild.classList.add('selected');
+        }
+    }
+})
 
 function fetchWeatherData(coordsData) {
     console.log("Coords data received: ", coordsData);

@@ -65,8 +65,8 @@ body {
 }
 
 .search-suggestion {
-  padding-top: .15rem;
-  padding-bottom: .15rem;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
   padding-left: 1rem;
   padding-right: .5rem;
 }
@@ -90,8 +90,13 @@ body {
   padding-bottom: .7rem;
 }
 
+.search-suggestion.selected {
+  background-color: dodgerblue;
+}
+
 .fi {
   border: 1px solid rgba(0, 0, 0, .6);
+  margin-right: .15rem;
 }
 
 #location-search {
