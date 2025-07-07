@@ -29,6 +29,8 @@ for (i = 0; i < 8; i++) {
 }
 
 let contentWeek = '';
+contentWeek += `
+    <span></span>`;
 for (i = 0; i < 7; i++) {
     contentWeek += `
       <div class="weather-week">
@@ -40,8 +42,10 @@ for (i = 0; i < 7; i++) {
         </div>
       </div>
     `;
-}
 
+}
+contentWeek += `
+    <span></span>`;
 
 
 document.querySelector('#app').innerHTML = `
@@ -63,17 +67,22 @@ document.querySelector('#app').innerHTML = `
         <h1 id="current-temperature" class="t">28°C</h1>
       </div>
     </div>
-    <div id="border-container">
-    <div class="scrollable-container">
-      <div id="data-24h-grid">
-        ${content24h}
-      </div>
-    </div>
+    <div id="border-container-24h">
+        <div id="scrollable-container-24h">
+          <div id="data-24h-grid">
+            ${content24h}
+          </div>
+        </div>
     </div>
     
-    <div id="data-week-grid">
-      ${contentWeek}
+    <div id="border-container-week">
+      <div id="scrollable-container-week">
+        <div id="data-week-grid">
+          ${contentWeek}
+        </div>
+      </div>
     </div>
+    
     
     
     
@@ -85,6 +94,20 @@ document.querySelector('#app').innerHTML = `
     
   </div>
 `;
+
+let isLMBPressed = false;
+
+window.addEventListener('mousedown', (e) => {
+  if (e.button === 0) { // 0 = Left Mouse Button
+    isLMBPressed = true;
+  }
+});
+
+window.addEventListener('mouseup', (e) => {
+  if (e.button === 0) {
+    isLMBPressed = false;
+  }
+});
 
 function simpleFetchWeatherData(location) {
     console.log("fetching");
@@ -135,11 +158,22 @@ function convertTemp() {
 let search = document.getElementById("location-search");
 let searchAndSuggestions = document.getElementById('search-and-suggestions');
 let suggestionsDropdown = document.getElementById('suggestions-dropdown');
-search.addEventListener('focus', () => suggestionsDropdown.style.display = 'block');
+search.addEventListener('focus', () => {
+    // search.classList.remove('blurring');
+    suggestionsDropdown.style.display = 'block';
+});
 search.addEventListener('blur', () => {
+    search.classList.add('blurring');
+    if (!isLMBPressed) {
+        search.classList.remove('blurring');
+    }
     document.body.addEventListener('mouseup', () => {
         if (document.activeElement !== search) {
-            setTimeout(() => suggestionsDropdown.style.display = 'none', 10);
+
+            setTimeout(() => {
+                search.classList.remove('blurring');
+                suggestionsDropdown.style.display = 'none';
+            }, 10);
         }
 
     }, { once: true });
