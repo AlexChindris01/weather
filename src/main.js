@@ -83,6 +83,23 @@ document.querySelector('#app').innerHTML = `
       </div>
     </div>
     
+    <table id='extra-1'>
+      <tr>
+        <td>
+          UV index: <br>moderate <span class="uvi-dot"></span>
+        </td>
+        <td>
+          Humidity: 20%
+        </td>
+        <td>
+          Wind: 10 km/h<br>Gusts: 40 km/h
+        </td>
+        <td>
+          <div id="sunrise">06:00</div>
+          <div id="sunset">20:00</div>
+        </td>
+      </tr>
+    </table>
     
     
     
@@ -156,7 +173,7 @@ function convertTemp() {
 
 
 let search = document.getElementById("location-search");
-let searchAndSuggestions = document.getElementById('search-and-suggestions');
+// let searchAndSuggestions = document.getElementById('search-and-suggestions');
 let suggestionsDropdown = document.getElementById('suggestions-dropdown');
 search.addEventListener('focus', () => {
     // search.classList.remove('blurring');
