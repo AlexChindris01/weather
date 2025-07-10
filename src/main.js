@@ -85,16 +85,16 @@ document.querySelector('#app').innerHTML = `
     
     <table id='extra-1'>
       <tr>
-        <td>
-          UV index: <br>moderate <span class="uvi-dot"></span>
+        <td id="uvi-data">
+          UV index: <br>moderate <span class="uvi-dot moderate"></span>
         </td>
-        <td>
+        <td id="humidity-data">
           Humidity: 20%
         </td>
-        <td>
+        <td id="wind-data">
           Wind: 10 km/h<br>Gusts: 40 km/h
         </td>
-        <td>
+        <td id="sunrise-sunset-data">
           <div id="sunrise">06:00</div>
           <div id="sunset">20:00</div>
         </td>
@@ -363,5 +363,25 @@ function displayWeatherData(data) {
         days[i].innerHTML = weekdaysInLetters[dateTime.getUTCDay()];
         dailyIcons[i].src = wIcons.get(currDaily["weather"][0]["id"])[0] + ".png";
     }
+    let uviRisk;
+    const uvi = Math.round(data['current']['uvi']);
+    if (uvi < 3) uviRisk = 'low';
+    else if (uvi < 6) uviRisk = 'moderate';
+    else if (uvi < 8) uviRisk = 'high';
+    else if (uvi < 11) uviRisk = 'very high';
+    else uviRisk = 'extreme';
+    const uvi_risk_css_class = uviRisk.split(' ').join('-');
+    const uviData = document.getElementById('uvi-data');
+    uviData.innerHTML = `UV index: <br>${uviRisk} <span class="uvi-dot ${uvi_risk_css_class}"></span>`;
+    document.getElementById('humidity-data').innerHTML = `Humidity: ${data['current']['humidity']}%`;
+    document.getElementById('wind-data').innerHTML = `Wind: ${Math.round(data['current']['wind_speed'] * 3.6)} km/h`;
+    if ('wind_gust' in data['current']) {
+        document.getElementById('wind-data').innerHTML +=
+            `<br>Gusts: ${Math.round(data['current']['wind_gust'] * 3.6)} km/h`;
+    }
+    dateTime = new Date((data['daily'][0]['sunrise'] + data["timezone_offset"]) * 1000);
+    document.getElementById('sunrise').innerHTML = dateTime.getUTCHours() + ':' + dateTime.getUTCMinutes();
+    dateTime = new Date((data['daily'][0]['sunset'] + data["timezone_offset"]) * 1000);
+    document.getElementById('sunset').innerHTML = dateTime.getUTCHours() + ':' + dateTime.getUTCMinutes();
     convertTemp();
 }
