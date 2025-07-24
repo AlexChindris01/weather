@@ -2,11 +2,15 @@ import './style.css';
 import currWeather from './assets/icons/weather_icons_3/sun.png';
 import weather24h1 from './assets/icons/weather_icons_3/cloudy (1).png';
 import drop from './assets/icons/weather_icons_3/drop.png';
-import { API_KEY } from "./secret.js";
 import { wIcons } from "./iconsMap.js";
 import locations from "./assets/locations.json";
 import "flag-icons/css/flag-icons.min.css";
 
+// let workerAvailable = (typeof(Worker) !== 'undefined');
+// if (workerAvailable) {
+//     console.log("Worker available");
+//     var searchWorker = new Worker(new URL('./searchWorker.js', import.meta.url), { type: 'module' });
+// }
 const WPATH = "";//"/icons/weather";
 //console.log(locationsJSON);
 //const locations = JSON.parse(locationsJSON);
@@ -49,7 +53,7 @@ contentWeek += `
 
 
 document.querySelector('#app').innerHTML = `
-  <div id="main-card">
+  <div class="main-card">
     
     <div id="main-header-grid">
       <h1 id="main-header">Weather App</h1>
@@ -83,23 +87,26 @@ document.querySelector('#app').innerHTML = `
       </div>
     </div>
     
-    <table id='extra-1'>
-      <tr>
-        <td id="uvi-data">
-          UV index: <br>moderate <span class="uvi-dot moderate"></span>
-        </td>
-        <td id="humidity-data">
-          Humidity: 20%
-        </td>
-        <td id="wind-data">
-          Wind: 10 km/h<br>Gusts: 40 km/h
-        </td>
-        <td id="sunrise-sunset-data">
-          <div id="sunrise">06:00</div>
-          <div id="sunset">20:00</div>
-        </td>
-      </tr>
-    </table>
+    <div id="extra-1-wrapper">
+      <table id='extra-1'>
+          <tr>
+            <td id="uvi-data">
+              UV index: <br>moderate <span class="uvi-dot moderate"></span>
+            </td>
+            <td id="humidity-data">
+              Humidity: 20%
+            </td>
+            <td id="wind-data">
+              Wind: 10 km/h<br>Gusts: 40 km/h
+            </td>
+            <td id="sunrise-sunset-data">
+              <div id="sunrise">06:00</div>
+              <div id="sunset">20:00</div>
+            </td>
+          </tr>
+        </table>
+    </div>
+    
     
     
     
@@ -110,6 +117,7 @@ document.querySelector('#app').innerHTML = `
     
     
   </div>
+  <a href="/attributions.html" class="link-1">Attributions</a>
 `;
 
 let isLMBPressed = false;
@@ -130,7 +138,8 @@ function simpleFetchWeatherData(location) {
     console.log("fetching");
 
     const API_URL =
-        "https://api.openweathermap.org/data/3.0/onecall?lat=" + location['lat'] + "&lon=" + location['lng'] + "&appid=" + API_KEY;
+        `https://byscjkn5vvg3zlwrgzhdaa65j40njgws.lambda-url.eu-north-1.on.aws/?lat=${location['lat']}&lon=${location['lng']}`;
+        // "https://api.openweathermap.org/data/3.0/onecall?lat=" + location['lat'] + "&lon=" + location['lng'] + "&appid=" + API_KEY;
     fetch(API_URL)
         .then(response => {
             if (!response.ok) {
@@ -147,14 +156,16 @@ function simpleFetchWeatherData(location) {
 }
 
 function inputLocationMatch(searchWords, loc) {
+    let strippedAdminName = loc['admin_name'].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     const tester =
-        [loc["city"], loc["city_ascii"], loc["country"], loc["iso2"], loc["iso3"], loc["admin_name"]].join(",");
+        [loc["city"], loc["city_ascii"], loc["country"], loc["iso2"], loc["iso3"], loc["admin_name"], strippedAdminName].join(",");
     let word;
     if (searchWords.join().length === 0) {
         return false;
     }
     for (word of searchWords) {
-        if (!tester.includes(word)) {
+        let strippedWord = word.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (!(tester.includes(word) || tester.includes(strippedWord))) {
             return false;
         }
     }
@@ -196,10 +207,13 @@ search.addEventListener('blur', () => {
     }, { once: true });
 });
 
+
 search.addEventListener("keyup", (e) => {
-    if (/^[\w]$/.test(e.key) || e.code === "Backspace") {
+    console.log('keyup occurred');
+    if (/*/^[\w]$/.test(e.key) || */e.code === "Backspace" || (e.key.length === 1 && /\p{L}/u.test(e.key))) {
         document.getElementById('suggestions-dropdown').innerHTML = '';
-        let searchWords = search.value.split(/[^\w]+/);
+        // let searchWords = search.value.split(/[^\w]+/);
+        let searchWords = search.value.split(/[^\p{L}]+/u);
         search.classList.toggle('writing', search.value !== '');
         for (let i = 0; i < searchWords.length; i++) {
             if (/^[a-z]$/.test(searchWords[i][0])) {
@@ -209,6 +223,28 @@ search.addEventListener("keyup", (e) => {
         }
         console.log("searchWords: ");
         console.log(searchWords);
+        // if (workerAvailable) {
+        //     searchWorker.postMessage(searchWords);
+        //     searchWorker.onmessage = (workerEvent) => {
+        //         let workerSuggestions = workerEvent.data;
+        //         for (let workerSuggestion of workerSuggestions) {
+        //             const myDiv = document.createElement('div');
+        //             myDiv.className = 'search-suggestion';
+        //             myDiv.dataset.locationData = JSON.stringify(workerSuggestion);
+        //             myDiv.innerHTML = `
+        //               <span class="fi fi-${workerSuggestion['iso2'].toLowerCase()}"></span>
+        //               ${workerSuggestion['city_ascii']}, ${workerSuggestion['admin_name']}
+        //             `;
+        //             myDiv.onclick = () => simpleFetchWeatherData(workerSuggestion);
+        //
+        //             document.getElementById('suggestions-dropdown').appendChild(myDiv);
+        //             search.classList.toggle('has-suggestions', workerSuggestions.length > 0);
+        //             suggestionsDropdown.firstChild.classList.add('selected');
+        //             console.log(workerSuggestions);
+        //         }
+        //     }
+        // }
+        // else {
         let suggestions = [];
         let loc;
         for (loc of locations) {
@@ -220,13 +256,7 @@ search.addEventListener("keyup", (e) => {
             }
         }
         for (let suggestion of suggestions) {
-            // document.getElementById('suggestions-dropdown').innerHTML += `
-            //     <div class='search-suggestion'>
-            //       ${suggestion['city_ascii']}
-            //     </div>
-            // `;
-            // document.getElementById('suggestions-dropdown').lastChild
-            //     .onclick = () => simpleFetchWeatherData(suggestion['lat'], suggestion['lng']);
+
             const myDiv = document.createElement('div');
             myDiv.className = 'search-suggestion';
             myDiv.dataset.locationData = JSON.stringify(suggestion);
@@ -241,6 +271,8 @@ search.addEventListener("keyup", (e) => {
         search.classList.toggle('has-suggestions', suggestions.length > 0);
         suggestionsDropdown.firstChild.classList.add('selected');
         console.log(suggestions);
+        // }
+
     }
     else if (e.code === "Enter") {
         if (document.getElementById('suggestions-dropdown').innerHTML !== '') {
@@ -251,23 +283,23 @@ search.addEventListener("keyup", (e) => {
         }
         else {
             // let lat, lon;
-        let searchInput =
-            search.value
-                .split(/[^\w\s]+/)
-                .join(",");
-        const COORD_API_URL =
-            "http://api.openweathermap.org/geo/1.0/direct?q=" + searchInput + "&limit=1&appid=" + API_KEY;
-        fetch(COORD_API_URL)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("response error");
-                }
-                return response.json();
-            })
-            .then(fetchWeatherData)
-            .catch(error => {
-                console.error("Coords fetch error: ", error);
-            })
+            let searchInput =
+                search.value
+                    .split(/[^\w\s]+/)
+                    .join(",");
+            const COORD_API_URL =
+                "http://api.openweathermap.org/geo/1.0/direct?q=" + searchInput + "&limit=1&appid=" + API_KEY;
+            fetch(COORD_API_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("response error");
+                    }
+                    return response.json();
+                })
+                .then(fetchWeatherData)
+                .catch(error => {
+                    console.error("Coords fetch error: ", error);
+                })
         }
 
     }
@@ -303,7 +335,7 @@ function fetchWeatherData(coordsData) {
     const lat = coordsData[0]["lat"];
     const lon = coordsData[0]["lon"];
     const API_URL =
-        "https://api.openweathermap.org/data/3.0/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
+        "https://byscjkn5vvg3zlwrgzhdaa65j40njgws.lambda-url.eu-north-1.on.aws/?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
     fetch(API_URL)
         .then(response => {
             if (!response.ok) {
@@ -345,7 +377,7 @@ function displayWeatherData(data) {
         hours[i].innerHTML += ":00";
         hourlyPOPs[i].innerHTML = Math.round(currHourly["pop"] * 100);
         hourlyPOPs[i].innerHTML += "%";
-        dayNight = (currHour > sunriseHour && currHour < sunsetHour) ?
+        dayNight = (currHour > sunriseHour && currHour <= sunsetHour) ?
         0 : 1;
 
         hourlyIcons[i].src = wIcons.get(currHourly["weather"][0]["id"])[dayNight] + ".png";
@@ -380,8 +412,12 @@ function displayWeatherData(data) {
             `<br>Gusts: ${Math.round(data['current']['wind_gust'] * 3.6)} km/h`;
     }
     dateTime = new Date((data['daily'][0]['sunrise'] + data["timezone_offset"]) * 1000);
-    document.getElementById('sunrise').innerHTML = dateTime.getUTCHours() + ':' + dateTime.getUTCMinutes();
+    let minutesExtraZero = dateTime.getUTCMinutes() < 10 ? '0' : '';
+    document.getElementById('sunrise').innerHTML = dateTime.getUTCHours() + ':' +
+        minutesExtraZero + dateTime.getUTCMinutes();
     dateTime = new Date((data['daily'][0]['sunset'] + data["timezone_offset"]) * 1000);
-    document.getElementById('sunset').innerHTML = dateTime.getUTCHours() + ':' + dateTime.getUTCMinutes();
+    minutesExtraZero = dateTime.getUTCMinutes() < 10 ? '0' : '';
+    document.getElementById('sunset').innerHTML = dateTime.getUTCHours() + ':' +
+        minutesExtraZero + dateTime.getUTCMinutes();
     convertTemp();
 }

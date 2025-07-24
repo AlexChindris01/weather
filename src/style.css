@@ -15,7 +15,7 @@ body {
 
 
 
-#main-card {
+.main-card {
   max-width: 780px;
   margin: auto;
   /*margin-left: 20rem;*/
@@ -31,6 +31,10 @@ body {
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, .2);
   border: 1px solid rgba(0, 0, 0, .1);
   /*text-align: center;*/
+}
+
+#attributions-main-card {
+  padding-top: 1.5rem;
 }
 
 #main-header {
@@ -339,6 +343,11 @@ input.blurring {
 
 }
 
+#extra-1-wrapper { /* makes justify-self: center work on firefox*/
+  display: grid;
+  justify-self: center;
+}
+
 #extra-1 {
   margin-top: 4rem;
 
@@ -348,6 +357,7 @@ input.blurring {
   /*border-collapse: collapse;*/
   /*display: flex;*/
   justify-self: center;
+
   margin-right: 1rem;
   table-layout: fixed;
   width: 40rem;
@@ -442,6 +452,15 @@ input.blurring {
 
 .uvi-dot.extreme {
   background-color: violet;
+}
+
+.link-1 {
+  background-color: rgba(220, 230, 240, 1);
+  padding: .25rem;
+  border: 1px solid rgba(0, 0, 0, .5);
+  font-size: .9rem;
+  text-decoration: none;
+  color: rgba(0, 30, 100, .9);
 }
 
 @media only screen and (max-width: 650px) {
@@ -557,4 +576,12 @@ input.blurring {
   #sunrise {
     margin-top: 1.2rem;
   }
+
+  .in-firefox #extra-1 {
+    margin-left: 0;
+  }
+}
+
+@-moz-document url-prefix() {
+  
 }
