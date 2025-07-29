@@ -3,8 +3,77 @@ import currWeather from './assets/icons/weather_icons_3/sun.png';
 import weather24h1 from './assets/icons/weather_icons_3/cloudy (1).png';
 import drop from './assets/icons/weather_icons_3/drop.png';
 import { wIcons } from "./iconsMap.js";
-import locations from "./assets/locations.json";
+// import locations from "./assets/locations.json";
 import "flag-icons/css/flag-icons.min.css";
+import FlexSearch from "flexsearch";
+// import fs from 'fs';
+// const fs = require('fs');
+
+let locationsOriginal;
+let locations;
+let index;
+fetch('/locations.json')
+    .then(res => res.json())
+    .then(data => {
+        locationsOriginal = data;
+        console.log('json loaded');
+        // console.log(locations[0]);
+        locations = locationsOriginal.map(item => ({
+            ...item,
+            search: `${item['city']} ${item['city_ascii']} ${item['country']} ${item['iso2']} ${item['iso3']} ${item['admin_name']} 
+                ${item['admin_name'].normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`
+        }));
+        index = new FlexSearch.Document({
+            document: {
+                id: 'id',
+                store: ['country', 'city_ascii', 'iso2', 'admin_name', 'lat', 'lng'],
+                index: [{
+                    field: 'search',
+                    tokenize: 'forward'
+                }]
+            }
+        });
+        // let indexingChecker = [];
+        locations.forEach(item => index.add(item));
+        console.log("starting search");
+        const indexTest =
+            index
+                .search('Baia', {index: 'search', enrich: true});
+                // .flatMap(r => r.result);
+        console.log("index test result: ");
+        console.log(indexTest);
+        // console.log("index checker: ");
+        // console.log(indexingChecker[0]);
+
+
+
+//         index.export((exportedIndex) => {
+//     // Convert to a Blob
+//     const blob = new Blob([exportedIndex], { type: "application/json" });
+//
+//     // Create a link element
+//     const link = document.createElement("a");
+//     link.href = URL.createObjectURL(blob);
+//     link.download = "flexsearch-index.json";
+//
+//     // Trigger the download
+//     link.click();
+//
+//     // Clean up
+//     URL.revokeObjectURL(link.href);
+// });
+
+
+
+    })
+    .catch(err => {
+        console.error('error loading json', err);
+    })
+
+
+
+
+
 
 // let workerAvailable = (typeof(Worker) !== 'undefined');
 // if (workerAvailable) {
@@ -207,10 +276,21 @@ search.addEventListener('blur', () => {
     }, { once: true });
 });
 
-
+let lastSearchValue = '';
 search.addEventListener("keyup", (e) => {
+
     console.log('keyup occurred');
-    if (/*/^[\w]$/.test(e.key) || */e.code === "Backspace" || (e.key.length === 1 && /\p{L}/u.test(e.key))) {
+    let lastChar = search.value.length > 0 ? search.value[search.value.length - 1] : '';
+    // if (/*/^[\w]$/.test(e.key) || */e.code === "Backspace" || (e.key.length === 1 && /\p{L}/u.test(e.key))) {
+    if (lastChar === '') {
+        document.getElementById('suggestions-dropdown').innerHTML = '';
+        search.classList.remove('writing');
+        search.classList.remove('has-suggestions');
+    }
+    let searchValueChanged = lastSearchValue !== search.value;
+    lastSearchValue = search.value;
+    if (/\p{L}/u.test(lastChar) && lastChar !== '' && searchValueChanged) {
+        console.log('passed big if');
         document.getElementById('suggestions-dropdown').innerHTML = '';
         // let searchWords = search.value.split(/[^\w]+/);
         let searchWords = search.value.split(/[^\p{L}]+/u);
@@ -247,14 +327,18 @@ search.addEventListener("keyup", (e) => {
         // else {
         let suggestions = [];
         let loc;
-        for (loc of locations) {
-            if (inputLocationMatch(searchWords, loc)) {
-                suggestions.push(loc);
-            }
-            if (suggestions.length === 5) {
-                break;
-            }
-        }
+        // console.log(locations[0]);
+        let indexSearch = index.search(searchWords.join(' '), {index: 'search', enrich: true})[0].result.slice(0, 5);
+        indexSearch.forEach(item => suggestions.push(item.doc));
+        // for (loc of locations) {
+        //     console.log('now searching');
+        //     if (inputLocationMatch(searchWords, loc)) {
+        //         suggestions.push(loc);
+        //     }
+        //     if (suggestions.length === 5) {
+        //         break;
+        //     }
+        // }
         for (let suggestion of suggestions) {
 
             const myDiv = document.createElement('div');
@@ -325,6 +409,9 @@ search.addEventListener('keydown', (e) => {
         else {
             suggestionsDropdown.lastChild.classList.add('selected');
         }
+    }
+    else {
+        console.log('keydown occurred');
     }
 })
 
