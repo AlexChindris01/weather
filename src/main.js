@@ -370,7 +370,7 @@ search.addEventListener("keyup", (e) => {
         // }
 
     }
-    else if (e.code === "Enter") {
+    else if (e.key === "Enter") {
         if (document.getElementById('suggestions-dropdown').innerHTML !== '') {
             let data = JSON.parse(document.getElementsByClassName('selected')[0].dataset.locationData);
             document.getElementById('location-search').blur();

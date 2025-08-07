@@ -6,6 +6,13 @@
 /*  min-height: 100vh;*/
 /*}*/
 
+html {
+  /*font-family: Helvetica, Arial, sans-serif;*/
+  /*background-image: url("assets/backgrounds/sun_and_clouds_3.jpg");*/
+  /*background-attachment: fixed;*/
+  /*background-size: cover;*/
+}
+
 body {
   font-family: Helvetica, Arial, sans-serif;
   background-image: url("assets/backgrounds/sun_and_clouds_3.jpg");
@@ -13,7 +20,9 @@ body {
   background-size: cover;
 }
 
-
+#attributions-body {
+  height: 100vh;
+}
 
 .main-card {
   max-width: 780px;
@@ -472,17 +481,23 @@ input.blurring {
     -ms-overflow-style: none;
     scrollbar-width: none;
     /*overflow: auto;*/
+    /*background-attachment: scroll;*/
+
+  }
+
+  body {
+    background-attachment: scroll;
   }
 
   html::-webkit-scrollbar {
     display: none;
   }
 
-  #main-card {
-    padding-left: 3rem;
-    margin-left: .5rem;
-    padding-right: 3rem;
-    margin-right: .5rem;
+  .main-card {
+    padding-left: 2rem;/*3rem;*/
+    /*margin-left: .5rem;*/
+    padding-right: 2rem;/*3rem;*/
+    /*margin-right: .5rem;*/
   /*  width: 70vw;*/
   /*  position: relative;*/
   /*  !*top: -50px;*!*/
@@ -575,6 +590,10 @@ input.blurring {
 
   #sunrise {
     margin-top: 1.2rem;
+  }
+
+  #sunset {
+    margin-bottom: 1rem;
   }
 
   .in-firefox #extra-1 {
