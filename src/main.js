@@ -6,74 +6,86 @@ import { wIcons } from "./iconsMap.js";
 // import locations from "./assets/locations.json";
 import "flag-icons/css/flag-icons.min.css";
 import FlexSearch from "flexsearch";
+// import {promises as fs} from 'fs';
 // import fs from 'fs';
 // const fs = require('fs');
 
 let locationsOriginal;
 let locations;
-let index;
-fetch('/locations.json')
-    .then(res => res.json())
-    .then(data => {
-        locationsOriginal = data;
-        console.log('json loaded');
-        // console.log(locations[0]);
-        locations = locationsOriginal.map(item => ({
-            ...item,
-            search: `${item['city']} ${item['city_ascii']} ${item['country']} ${item['iso2']} ${item['iso3']} ${item['admin_name']} 
-                ${item['admin_name'].normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`
-        }));
-        index = new FlexSearch.Document({
-            document: {
-                id: 'id',
-                store: ['country', 'city_ascii', 'iso2', 'admin_name', 'lat', 'lng'],
-                index: [{
-                    field: 'search',
-                    tokenize: 'forward'
-                }]
-            }
-        });
-        // let indexingChecker = [];
-        locations.forEach(item => index.add(item));
-        console.log("starting search");
-        const indexTest =
-            index
-                .search('Baia', {index: 'search', enrich: true});
-                // .flatMap(r => r.result);
-        console.log("index test result: ");
-        console.log(indexTest);
-        // console.log("index checker: ");
-        // console.log(indexingChecker[0]);
-
-
-
-//         index.export((exportedIndex) => {
-//     // Convert to a Blob
-//     const blob = new Blob([exportedIndex], { type: "application/json" });
+// let index;
+// fetch('/locations.json')
+//     .then(res => res.json())
+//     .then(data => {
+//         locationsOriginal = data;
+//         console.log('json loaded');
+//         // console.log(locations[0]);
+//         locations = locationsOriginal.map(item => ({
+//             ...item,
+//             search: `${item['city']} ${item['city_ascii']} ${item['country']} ${item['iso2']} ${item['iso3']} ${item['admin_name']}
+//                 ${item['admin_name'].normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`
+//         }));
+//         index = new FlexSearch.Document({
+//             document: {
+//                 id: 'id',
+//                 store: ['country', 'city_ascii', 'iso2', 'admin_name', 'lat', 'lng'],
+//                 index: [{
+//                     field: 'search',
+//                     tokenize: 'forward'
+//                 }]
+//             }
+//         });
+//         // let indexingChecker = [];
+//         locations.forEach(item => index.add(item));
+//         console.log("starting search");
+//         const indexTest =
+//             index
+//                 .search('Baia', {index: 'search', enrich: true});
+//                 // .flatMap(r => r.result);
+//         console.log("index test result: ");
+//         console.log(indexTest);
 //
-//     // Create a link element
-//     const link = document.createElement("a");
-//     link.href = URL.createObjectURL(blob);
-//     link.download = "flexsearch-index.json";
 //
-//     // Trigger the download
-//     link.click();
 //
-//     // Clean up
-//     URL.revokeObjectURL(link.href);
-// });
+//
+//     })
+//     .catch(err => {
+//         console.error('error loading json', err);
+//     })
 
 
+const index = new FlexSearch.Document({
+    document: {
+        id: 'id',
+        store: ['country', 'city_ascii', 'iso2', 'admin_name', 'lat', 'lng'],
+        index: [{
+            field: 'search',
+            tokenize: 'forward'
+        }]
+    }
+});
 
+// const files = await fs.readdir("./assets/export/");
+// for(let i = 0; i < files.length; i++){
+//   const data = await fs.readFile("./assets/export/" + files[i], "utf8");
+//   await index.import(files[i], data);
+// }
+fetch('/1.doc')
+    .then(res => res.text())
+    .then(async text => {
+        await index.import('1.doc', text);
     })
-    .catch(err => {
-        console.error('error loading json', err);
+fetch('/1.reg')
+    .then(res => res.text())
+    .then(async text => {
+        await index.import('1.reg', text);
     })
-
-
-
-
-
+for (let i = 1; i <= 6; i++) {
+    fetch('search.' + i + '.map')
+        .then(res => res.text())
+        .then(async text => {
+            await index.import('search.' + i + '.map', text);
+        })
+}
 
 // let workerAvailable = (typeof(Worker) !== 'undefined');
 // if (workerAvailable) {
