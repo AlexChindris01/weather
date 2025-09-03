@@ -340,8 +340,22 @@ search.addEventListener("keyup", (e) => {
         let suggestions = [];
         let loc;
         // console.log(locations[0]);
-        let indexSearch = index.search(searchWords.join(' '), {index: 'search', enrich: true})[0].result.slice(0, 5);
+        console.log("search results: ");
+        let indexSearchRaw =
+            index.search(searchWords.join(' '), {index: 'search', enrich: true});
+        console.log(indexSearchRaw);
+        let indexSearch;
+        if (indexSearchRaw.length !== 0) {
+            indexSearch = indexSearchRaw[0].result.slice(0, 5);
+        }
+        else {
+            indexSearch = indexSearchRaw;
+        }
+
         indexSearch.forEach(item => suggestions.push(item.doc));
+        console.log("suggestions: ");
+        console.log(suggestions);
+
         // for (loc of locations) {
         //     console.log('now searching');
         //     if (inputLocationMatch(searchWords, loc)) {

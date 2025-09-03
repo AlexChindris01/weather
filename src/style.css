@@ -381,6 +381,7 @@ input.blurring {
   border-right: 2px solid rgba(0, 30, 100, .3);
   padding: 1rem;
   padding-top: 3rem;
+  padding-bottom: .9rem;
   text-align: center;
 }
 
@@ -389,7 +390,8 @@ input.blurring {
   background-size: 2rem;
   background-repeat: no-repeat;
   background-position-x: center;
-  background-position-y: 10px;
+  background-position-y: 1rem;
+  padding-top: 3.4rem;
 }
 
 #extra-1 td:nth-child(2) {
@@ -397,8 +399,8 @@ input.blurring {
   background-size: 1.6rem;
   background-repeat: no-repeat;
   background-position-x: center;
-  background-position-y: 15px;
-  padding-top: 3.5rem;
+  background-position-y: 1.4rem;
+  padding-top: 3.4rem;
 }
 
 #extra-1 td:nth-child(3) {
@@ -406,7 +408,9 @@ input.blurring {
   background-size: 1.6rem;
   background-repeat: no-repeat;
   background-position-x: center;
-  background-position-y: 15px;
+  background-position-y: 1.4rem;
+  /*justify-content: center;*/
+  padding-top: 3.4rem;
 }
 
 #extra-1 td:last-child {
@@ -419,6 +423,10 @@ input.blurring {
   padding-left: 1.5rem;
   font-size: 1.1rem;
 }
+
+/*#extra-1 td:nth-child(3)#wind-data {*/
+  /*padding-top: 3.2rem;*/
+/*}*/
 
 #sunrise {
   text-align: center;
@@ -584,8 +592,19 @@ input.blurring {
   }
 
   #extra-1 td:nth-child(2) {
+    padding-top: 3.8rem;
     border-bottom: 2px solid rgba(0, 30, 100, .3);
     border-right: none;
+  }
+
+  #extra-1 td:nth-child(3) {
+    padding-top: 3.9rem;
+    background-position-y: 17px;
+  }
+
+  #extra-1 td:last-child {
+    padding-top: .3rem;
+    background-position-y: 12px, 55px;
   }
 
   #sunrise {
