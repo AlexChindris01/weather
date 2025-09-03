@@ -595,11 +595,21 @@ input.blurring {
     padding-top: 3.8rem;
     border-bottom: 2px solid rgba(0, 30, 100, .3);
     border-right: none;
+    background-position-y: 1.3rem;
   }
 
   #extra-1 td:nth-child(3) {
-    padding-top: 3.9rem;
-    background-position-y: 17px;
+    /*padding-top: 3.9rem;*/
+    background-position-y: 18px;
+
+  }
+
+  #wind-data-text {
+    margin: 0;
+    position: relative;
+    top: 55%;
+    /*left: 50%;*/
+    transform: translate(0, -50%);
   }
 
   #extra-1 td:last-child {

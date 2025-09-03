@@ -171,16 +171,19 @@ document.querySelector('#app').innerHTML = `
     <div id="extra-1-wrapper">
       <table id='extra-1'>
           <tr>
-            <td id="uvi-data">
+            <td id="uvi-data-cell">
               UV index: <br>moderate <span class="uvi-dot moderate"></span>
             </td>
-            <td id="humidity-data">
+            <td id="humidity-data-cell">
               Humidity: 20%
             </td>
-            <td id="wind-data">
-              Wind: 10 km/h<br>Gusts: 40 km/h
+            <td id="wind-data-cell">
+              <div id="wind-data-text">
+                Wind: 10 km/h<br>Gusts: 40 km/h
+              </div>
+              
             </td>
-            <td id="sunrise-sunset-data">
+            <td id="sunrise-sunset-data-cell">
               <div id="sunrise">06:00</div>
               <div id="sunset">20:00</div>
             </td>
@@ -516,12 +519,12 @@ function displayWeatherData(data) {
     else if (uvi < 11) uviRisk = 'very high';
     else uviRisk = 'extreme';
     const uvi_risk_css_class = uviRisk.split(' ').join('-');
-    const uviData = document.getElementById('uvi-data');
+    const uviData = document.getElementById('uvi-data-cell');
     uviData.innerHTML = `UV index: <br>${uviRisk} <span class="uvi-dot ${uvi_risk_css_class}"></span>`;
-    document.getElementById('humidity-data').innerHTML = `Humidity: ${data['current']['humidity']}%`;
-    document.getElementById('wind-data').innerHTML = `Wind: ${Math.round(data['current']['wind_speed'] * 3.6)} km/h`;
+    document.getElementById('humidity-data-cell').innerHTML = `Humidity: ${data['current']['humidity']}%`;
+    document.getElementById('wind-data-text').innerHTML = `Wind: ${Math.round(data['current']['wind_speed'] * 3.6)} km/h`;
     if ('wind_gust' in data['current']) {
-        document.getElementById('wind-data').innerHTML +=
+        document.getElementById('wind-data-text').innerHTML +=
             `<br>Gusts: ${Math.round(data['current']['wind_gust'] * 3.6)} km/h`;
     }
     dateTime = new Date((data['daily'][0]['sunrise'] + data["timezone_offset"]) * 1000);
